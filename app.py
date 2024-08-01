@@ -6,7 +6,11 @@ import streamlit as st
 import os
 from dotenv import load_dotenv
 load_dotenv()
-os.environ["OPENAI_API_KEY"]=os.getenv("OPENAI_API_KEY")
+openai_api_key = os.getenv("OPENAI_API_KEY", "sk-proj-U1afXeWJZHhVl3WeKxudT3BlbkFJCBTIsg48LM8lqDoHUKYF
+")
+#langchain_api_key = os.getenv("LANGCHAIN_API_KEY", "your_default_langchain_api_key")
+
+#os.environ["OPENAI_API_KEY"]=os.getenv("OPENAI_API_KEY")
 
 #os.environ["LANGCHAIN_TRACING_V2"]="true"
 #os.environ["LANGCHAIN_API_KEY"]=os.getenv("LANGCHAIN_API_KEY")
