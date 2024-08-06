@@ -1,7 +1,7 @@
 from langchain_openai import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
-
+import re
 import streamlit as st
 import os
 from dotenv import load_dotenv
@@ -25,7 +25,22 @@ vegetable_options = [
     "Bell Pepper", "Green Beans", "Peas", "Cucumber", "Eggplant",
     "Zucchini", "Mushroom", "Broccoli", "Cabbage","Spinach", "Dal","cluster beans"
 ]
-
+def split_on_cuisine(text):
+    # Custom splitting logic to identify and split cuisines
+    pattern = r'(?<=\D)(?=\d)|(?<=\d)(?=\D)'
+    split_text = re.split(pattern, text)
+    # Further refine split logic to ensure proper division of cuisines
+    cuisines = []
+    temp_cuisine = ""
+    for part in split_text:
+        if part.strip().isdigit():
+            if temp_cuisine:
+                cuisines.append(temp_cuisine.strip())
+            temp_cuisine = ""
+        temp_cuisine += part
+    if temp_cuisine:
+        cuisines.append(temp_cuisine.strip())
+    return cuisines
 #streamlit
 st.title(' Kitchenbot')
 selected_vegetables = st.multiselect("Select the vegetables you have:", vegetable_options)
@@ -39,7 +54,7 @@ if selected_vegetables:
 
     # Get the list of cuisines
     response = chain.invoke({'question': input_text})
-    cuisines = response.split(",")  # Assumes response is a comma-separated list of cuisines
+    cuisines = split_on_cuisine(response)
     cuisines = [cuisine.strip() for cuisine in cuisines]  # Clean up any extra whitespace
 
     # Display the list of cuisines and allow the user to select one
